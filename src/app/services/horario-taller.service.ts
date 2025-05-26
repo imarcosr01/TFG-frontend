@@ -3,10 +3,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HorarioTaller } from '../models/horario-taller.model';
+import { environment } from '../../environments/environment'; // Asegúrate de que la ruta sea correcta
 
 @Injectable({ providedIn: 'root' })
 export class HorarioTallerService {
-  private apiUrl = 'http://localhost:3000/api/horarios';
+  private apiUrl = `${environment.apiBaseUrl}/horarios`;
 
   constructor(private http: HttpClient) {}
 

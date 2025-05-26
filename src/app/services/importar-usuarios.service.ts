@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment'; // Asegúrate de que la ruta sea correcta
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class ImportarUsuariosService {
-    private apiUrl = 'http://localhost:3000/api/import/users';
+    private apiUrl =  `${environment.apiBaseUrl}/import/users`;
 
     constructor(private http: HttpClient) { }
 

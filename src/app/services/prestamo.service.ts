@@ -9,7 +9,7 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class PrestamoService {
-  private base = `${environment.apiUrl}/prestamos`;
+  private base = `${environment.apiBaseUrl}/prestamos`;
 
   constructor(private http: HttpClient) {}
 

@@ -10,7 +10,7 @@ import { CategoriaElemento } from '../models/categoria-elemento.model';
 })
 export class CategoriaElementoService {
   private endpoint = 'categorias';
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) { }
 

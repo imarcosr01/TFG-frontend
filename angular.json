@@ -38,10 +38,8 @@
             ],
             "scripts": [],
             "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "outputMode": "static",
+            "ssr": false
           },
           "configurations": {
             "production": {
@@ -57,17 +55,26 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "outputMode": "static",
+              "ssr": false
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "outputMode": "static",
+              "ssr": false
+            },
+            "ssr": {
+              "outputMode": "server",
+              "ssr": {
+                "entry": "src/server.ts"
+              }
             }
           },
           "defaultConfiguration": "production"
         },
-      
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
@@ -80,7 +87,6 @@
           },
           "defaultConfiguration": "development"
         }
-       
       }
     }
   },

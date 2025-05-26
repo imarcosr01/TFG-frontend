@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Clase } from '../models/clase.model';
+import { environment } from '../../environments/environment'; // Asegúrate de que esta ruta sea correcta
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClasesService {
-  private baseUrl = 'http://localhost:3000/api'; // Cambia esto si usas otra URL base
+  private baseUrl = `${environment.apiBaseUrl}`; // Cambia esto si usas otra URL base
 
   constructor(private http: HttpClient) {}
 

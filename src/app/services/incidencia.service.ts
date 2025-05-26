@@ -7,7 +7,7 @@ import { Incidencia, IncidenciaCreate } from '../models/incidencia.model';
 
 @Injectable({ providedIn: 'root' })
 export class IncidenciaService {
-  private base = `${environment.apiUrl}/incidencias`;
+  private base = `${environment.apiBaseUrl}/incidencias`;
 
   constructor(private http: HttpClient) {}
 

@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000/api'
+  production: true,
+  apiBaseUrl: 'https://tfg-backend-mcrs.onrender.com/api'
 };

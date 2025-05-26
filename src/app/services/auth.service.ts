@@ -1,11 +1,12 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { BehaviorSubject, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 export interface User {
-  id: number;            // <— aquí
+  id: number;
   email: string;
   nombre: string;
   apellido: string;
@@ -16,20 +17,20 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth'; // URL completa del backend
+  private apiUrl = `${environment.apiBaseUrl}/auth`; // Usar environment
   private userSubject = new BehaviorSubject<User | null>(null);
   user$ = this.userSubject.asObservable();
 
   constructor(
     private http: HttpClient,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object // Inyección para SSR
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.initializeAuthState();
   }
 
   private initializeAuthState() {
-    if (isPlatformBrowser(this.platformId)) { // Solo en cliente
+    if (isPlatformBrowser(this.platformId)) {
       const stored = localStorage.getItem('user');
       if (stored) {
         this.userSubject.next(JSON.parse(stored));
@@ -43,7 +44,7 @@ export class AuthService {
       { email, password }
     ).pipe(
       tap(({ token, user }) => {
-        if (isPlatformBrowser(this.platformId)) { // Solo en cliente
+        if (isPlatformBrowser(this.platformId)) {
           localStorage.setItem('token', token);
           localStorage.setItem('user', JSON.stringify(user));
         }
@@ -52,21 +53,17 @@ export class AuthService {
       })
     );
   }
-private redirectBasedOnRole(rol: 'profesor' | 'administrador') {
-  if (rol === 'profesor') {
-    // Llévale al menú principal de profesor
-    this.router.navigate(['/']);
-  } else {
-    // Llévale al panel de admin
-    this.router.navigate(['/admin']);
+
+  private redirectBasedOnRole(rol: 'profesor' | 'administrador') {
+    if (rol === 'profesor') {
+      this.router.navigate(['/']);
+    } else {
+      this.router.navigate(['/admin']);
+    }
   }
-}
-
-
-
 
   logout(): void {
-    if (isPlatformBrowser(this.platformId)) { // Solo en cliente
+    if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
     }
@@ -80,5 +77,14 @@ private redirectBasedOnRole(rol: 'profesor' | 'administrador') {
 
   getUser(): User | null {
     return this.userSubject.value;
+  }
+
+  isAuthenticated(): boolean {
+    return this.getToken() !== null && this.getUser() !== null;
+  }
+
+  hasRole(roles: string[]): boolean {
+    const user = this.getUser();
+    return user ? roles.includes(user.rol) : false;
   }
 }

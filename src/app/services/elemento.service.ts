@@ -10,7 +10,7 @@ import { Elemento,StockAdjustment } from '../models/elemento.model';
 })
 export class ElementosService {
   private endpoint = 'elementos';
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) { }
 
