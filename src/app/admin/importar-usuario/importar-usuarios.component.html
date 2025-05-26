@@ -1,0 +1,73 @@
+<app-unified-navbar></app-unified-navbar>
+<mat-card class="import-card">
+    <div class="back-button">
+    <button mat-icon-button color="primary" routerLink="/admin" aria-label="Volver al panel de administración">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon class="header-icon">cloud_upload</mat-icon>
+      Importar Usuarios
+    </mat-card-title>
+    <mat-card-subtitle>
+      Selecciona un archivo Excel o CSV para importar al sistema
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="form-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Tipo de Usuarios</mat-label>
+        <mat-select [(ngModel)]="userType">
+          <mat-option value="profesores">Profesores</mat-option>
+          <mat-option value="alumnos">Alumnos</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="file-select">
+        <input 
+          type="file" 
+          id="fileInput"
+          accept=".xlsx, .xls, .csv" 
+          (change)="onFileSelected($event)"
+          [disabled]="isLoading"
+          #fileInput
+          hidden
+        >
+        <button 
+          mat-stroked-button 
+          color="primary" 
+          (click)="fileInput.click()"
+          [disabled]="isLoading"
+        >
+          <mat-icon>attach_file</mat-icon>
+          {{ selectedFile ? 'Cambiar Archivo' : 'Seleccionar Archivo' }}
+        </button>
+        <span class="file-name" *ngIf="selectedFile">
+          <mat-icon>description</mat-icon>
+          <strong>{{ selectedFile.name }}</strong>
+          <small>({{ selectedFile.size | filesize }})</small>
+        </span>
+      </div>
+
+      <mat-progress-bar 
+        *ngIf="isLoading"
+        mode="determinate" 
+        [value]="uploadProgress"
+      ></mat-progress-bar>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button 
+      mat-flat-button 
+      color="accent" 
+      (click)="onUpload()"
+      [disabled]="!selectedFile || isLoading"
+    >
+      <mat-icon>upload</mat-icon>
+      Importar
+    </button>
+  </mat-card-actions>
+</mat-card>

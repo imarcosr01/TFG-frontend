@@ -1,0 +1,433 @@
+// src/app/components/login/login.component.scss
+
+.modern-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+// ========== ANIMATED BACKGROUND ==========
+.login-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.bg-element {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  animation: float 6s ease-in-out infinite;
+
+  &.bg-element-1 {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    left: -150px;
+    animation-delay: 0s;
+  }
+
+  &.bg-element-2 {
+    width: 200px;
+    height: 200px;
+    top: 50%;
+    right: -100px;
+    animation-delay: 2s;
+  }
+
+  &.bg-element-3 {
+    width: 150px;
+    height: 150px;
+    bottom: -75px;
+    left: 30%;
+    animation-delay: 4s;
+  }
+}
+
+// ========== LOGIN CONTENT ==========
+.login-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 440px;
+  padding: 20px;
+  animation: slideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// ========== HEADER SECTION ==========
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  .logo-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    mat-icon {
+      font-size: 40px;
+      width: 40px;
+      height: 40px;
+      color: #667eea;
+    }
+  }
+
+  .logo-text {
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 4px 0 0 0;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  }
+}
+
+// ========== LOGIN CARD ==========
+.login-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 32px;
+
+  h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0;
+    color: #78909c;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+}
+
+// ========== FORM STYLES ==========
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  .form-field {
+    width: 100%;
+
+    ::ng-deep .mat-mdc-form-field-flex {
+      background: rgba(248, 250, 252, 0.8);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      border-radius: 12px;
+    }
+
+    ::ng-deep .mat-mdc-form-field-outline {
+      color: rgba(0, 0, 0, 0.12);
+    }
+
+    ::ng-deep .mat-mdc-form-field-outline-thick {
+      color: #667eea;
+    }
+
+    ::ng-deep .mat-mdc-floating-label {
+      color: #78909c;
+      font-weight: 500;
+    }
+
+    ::ng-deep .mat-mdc-form-field-label-wrapper .mat-mdc-floating-label.mdc-floating-label--float-above {
+      color: #667eea;
+    }
+
+    ::ng-deep .mat-mdc-input-element {
+      color: #2c3e50;
+      font-weight: 500;
+    }
+
+    ::ng-deep .mat-mdc-input-element::placeholder {
+      color: #bdbdbd;
+    }
+
+    .field-icon {
+      color: #78909c;
+      margin-right: 8px;
+      font-size: 20px;
+      transition: color 0.3s ease;
+    }
+
+    &:focus-within {
+      ::ng-deep .mat-mdc-form-field-flex {
+        background: rgba(102, 126, 234, 0.05);
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+      }
+
+      .field-icon {
+        color: #667eea;
+      }
+    }
+  }
+}
+
+// ========== FORM ACTIONS ==========
+.form-actions {
+  margin-top: 8px;
+
+  .login-btn {
+    width: 100%;
+    height: 48px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: none;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &:not(:disabled):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    &:not(:disabled):active {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      background: #e0e0e0;
+      color: #9e9e9e;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ========== CARD FOOTER ==========
+.card-footer {
+  margin-top: 24px;
+  text-align: center;
+
+  .help-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    .help-link {
+      color: #667eea;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: #764ba2;
+        text-decoration: underline;
+      }
+    }
+
+    .separator {
+      color: #bdbdbd;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// ========== LOGIN FOOTER ==========
+.login-footer {
+  text-align: center;
+  margin-top: 32px;
+  animation: fadeIn 1s ease-out;
+
+  p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
+
+// ========== RESPONSIVE DESIGN ==========
+@media (max-width: 768px) {
+  .modern-login-container {
+    padding: 16px;
+  }
+
+  .login-content {
+    max-width: 100%;
+  }
+
+  .login-card {
+    padding: 24px;
+  }
+
+  .logo-section {
+    .logo-icon {
+      width: 64px;
+      height: 64px;
+
+      mat-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    .logo-text h1 {
+      font-size: 1.75rem;
+    }
+
+    .logo-text p {
+      font-size: 0.9rem;
+    }
+  }
+
+  .card-header h2 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .form-group {
+    .form-field {
+      ::ng-deep .mat-mdc-form-field-flex {
+        border-radius: 10px;
+      }
+    }
+  }
+
+  .login-btn {
+    height: 44px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+  }
+
+  .help-links {
+    flex-direction: column;
+    gap: 8px;
+
+    .separator {
+      display: none;
+    }
+  }
+}
+
+// ========== ANIMATIONS ==========
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ========== MATERIAL OVERRIDE ==========
+::ng-deep .mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: rgba(255, 255, 255, 0.95);
+  --mdc-snackbar-supporting-text-color: #2c3e50;
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+}

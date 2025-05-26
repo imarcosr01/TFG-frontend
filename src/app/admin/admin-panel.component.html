@@ -1,0 +1,98 @@
+<!-- src/app/admin/admin-panel.component.html -->
+<div class="modern-home-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="welcome-content">
+      <div class="welcome-icon">
+        <mat-icon>admin_panel_settings</mat-icon>
+      </div>
+      <div class="welcome-text">
+        <h1>Panel de Administración</h1>
+        <p>Sistema de gestión administrativa - Selecciona una opción para comenzar</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Cards Grid -->
+  <div class="navigation-grid">
+    <!-- Gestión de Elementos Card -->
+    <div class="nav-card primary-card">
+      <button mat-flat-button class="nav-button" (click)="go('/admin/elementos')">
+        <div class="card-content">
+          <div class="card-icon">
+            <mat-icon>inventory</mat-icon>
+          </div>
+          <div class="card-info">
+            <h3>Gestión de Elementos</h3>
+            <p>Administra el inventario completo del sistema</p>
+          </div>
+          <div class="card-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Gestión de Categorías Card -->
+    <div class="nav-card secondary-card">
+      <button mat-flat-button class="nav-button" (click)="go('/admin/categorias')">
+        <div class="card-content">
+          <div class="card-icon">
+            <mat-icon>category</mat-icon>
+          </div>
+          <div class="card-info">
+            <h3>Gestión de Categorías</h3>
+            <p>Organiza y clasifica elementos por categorías</p>
+          </div>
+          <div class="card-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Importar Usuarios Card -->
+    <div class="nav-card accent-card">
+      <button mat-flat-button class="nav-button" (click)="go('/admin/importar-usuarios')">
+        <div class="card-content">
+          <div class="card-icon">
+            <mat-icon>upload</mat-icon>
+          </div>
+          <div class="card-info">
+            <h3>Importar Usuarios</h3>
+            <p>Carga masiva de usuarios al sistema</p>
+          </div>
+          <div class="card-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Gestión de Horarios Card -->
+    <div class="nav-card info-card">
+      <button mat-flat-button class="nav-button" (click)="go('/admin/horarios')">
+        <div class="card-content">
+          <div class="card-icon">
+            <mat-icon>schedule</mat-icon>
+          </div>
+          <div class="card-info">
+            <h3>Gestión de Horarios</h3>
+            <p>Configura horarios y calendarios académicos</p>
+          </div>
+          <div class="card-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Logout Section -->
+  <div class="logout-section">
+    <button mat-stroked-button class="logout-btn" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Cerrar Sesión</span>
+    </button>
+  </div>
+</div>

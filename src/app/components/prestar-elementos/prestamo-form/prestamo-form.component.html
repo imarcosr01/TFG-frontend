@@ -1,0 +1,149 @@
+<app-unified-navbar></app-unified-navbar>
+
+<div class="modern-prestamo-form-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="page-title">
+      <mat-icon class="title-icon">add_circle</mat-icon>
+      <div class="title-text">
+        <h1>Nuevo Préstamo</h1>
+        <p>Registra un nuevo préstamo de elementos</p>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button 
+        mat-stroked-button 
+        class="back-btn"
+        (click)="router.navigateByUrl('/prestamos')"
+      >
+        <mat-icon>arrow_back</mat-icon>
+        Volver
+      </button>
+    </div>
+  </div>
+
+  <!-- Form Container -->
+  <div class="form-container">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="prestamo-form">
+      
+      <!-- Información del Préstamo -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon>info</mat-icon>
+          <h3>Información del Préstamo</h3>
+        </div>
+        
+        <div class="form-grid">
+          <!-- Selector de Grupo -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Grupo de Trabajo</mat-label>
+            <mat-select 
+              formControlName="id_grupo" 
+              (selectionChange)="onGrupoChange()"
+              required
+            >
+              <mat-option 
+                *ngFor="let grupo of grupos" 
+                [value]="grupo.id_grupo"
+              >
+                {{ grupo.nombre }} - {{ grupo.clase.nombre }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>group</mat-icon>
+            <mat-error *ngIf="form.get('id_grupo')?.hasError('required')">
+              Selecciona un grupo de trabajo
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Selector de Alumno -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Alumno (Opcional)</mat-label>
+            <mat-select formControlName="id_alumno">
+              <mat-option [value]="null">Sin alumno específico</mat-option>
+              <mat-option 
+                *ngFor="let alumno of alumnos" 
+                [value]="alumno.id_alumno"
+              >
+                {{ alumno.nombre }} {{ alumno.apellido }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>person</mat-icon>
+            
+            <!-- Loading para alumnos -->
+            <div class="loading-overlay" *ngIf="cargandoAlumnos">
+              <mat-spinner diameter="20" strokeWidth="3"></mat-spinner>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Elementos a Prestar -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon>inventory</mat-icon>
+          <h3>Elementos a Prestar</h3>
+        </div>
+
+        <div class="elementos-container">
+          <div 
+            class="elemento-item"
+            *ngFor="let elemento of elementos; let i = index"
+            [class.selected]="qty[i] > 0"
+          >
+            <div class="elemento-info">
+              <div class="elemento-icon">
+                <mat-icon>widgets</mat-icon>
+              </div>
+              <div class="elemento-details">
+                <h4 class="elemento-nombre">{{ elemento.nombre }}</h4>
+                <span class="elemento-stock">
+                  Stock disponible: {{ elemento.stockDisponible }}
+                </span>
+              </div>
+            </div>
+
+            <div class="elemento-quantity">
+              <mat-form-field appearance="outline" class="quantity-field">
+                <mat-label>Cantidad</mat-label>
+                <input 
+                  matInput 
+                  type="number" 
+                  min="0" 
+                  [max]="elemento.stockDisponible"
+                  [value]="qty[i]"
+                  #qtyInput
+                  (input)="onQtyChange(i, qtyInput.value)"
+                  placeholder="0"
+                >
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button 
+          type="button"
+          mat-stroked-button 
+          class="action-btn cancel-btn"
+          (click)="router.navigateByUrl('/prestamos')"
+        >
+          <mat-icon>close</mat-icon>
+          Cancelar
+        </button>
+
+        <button 
+          type="submit"
+          mat-flat-button 
+          class="action-btn submit-btn"
+          [disabled]="form.invalid"
+        >
+          <mat-icon>save</mat-icon>
+          Crear Préstamo
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

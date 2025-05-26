@@ -1,0 +1,226 @@
+<app-unified-navbar></app-unified-navbar>
+
+<div class="modern-schedule-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="page-title">
+      <mat-icon class="title-icon">schedule</mat-icon>
+      <div class="title-text">
+        <h1>Consultar Horario</h1>
+        <p>Gestiona tus reservas de taller</p>
+      </div>
+    </div>
+    
+    <!-- Date Navigation -->
+    <div class="date-navigation">
+      <button 
+        mat-icon-button 
+        class="nav-btn prev-btn"
+        (click)="changeDate(-7)"
+        matTooltip="Semana anterior"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      <div class="date-selector">
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>Seleccionar fecha</mat-label>
+          <input
+            matInput
+            type="date"
+            [(ngModel)]="fechaSeleccionada"
+            (ngModelChange)="reloadAll()"
+          />
+          <mat-icon matSuffix>event</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <button 
+        mat-icon-button 
+        class="nav-btn next-btn"
+        (click)="changeDate(7)"
+        matTooltip="Semana siguiente"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Admin Actions Panel -->
+  <div class="admin-actions-panel" *ngIf="isAdmin">
+    <div class="actions-container">
+      <button 
+        mat-flat-button 
+        class="action-btn primary-btn"
+        routerLink="/admin/horarios/nuevo"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Nueva Franja
+      </button>
+      
+      <button 
+        mat-flat-button 
+        class="action-btn accent-btn"
+        (click)="generarHorarioPorDefecto()"
+      >
+        <mat-icon>autorenew</mat-icon>
+        Generar por Defecto
+      </button>
+
+      <button
+        mat-flat-button
+        class="action-btn"
+        (click)="marcarRecurrentes()"
+      >
+        <mat-icon>repeat</mat-icon>
+        Marcar Recurr.
+      </button>
+      
+      <button 
+        mat-flat-button 
+        class="action-btn danger-btn"
+        (click)="eliminarTodoElHorario()"
+      >
+        <mat-icon>delete_forever</mat-icon>
+        Eliminar Todo
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="cargando">
+    <div class="loading-content">
+      <mat-spinner diameter="48" strokeWidth="4"></mat-spinner>
+      <p class="loading-text">Cargando horarios...</p>
+    </div>
+  </div>
+
+  <!-- Schedule Grid -->
+  <div class="schedule-grid" *ngIf="!cargando">
+    <div class="day-column" *ngFor="let dia of dias">
+      <!-- Day Header -->
+      <div class="day-header">
+        <div class="day-info">
+          <h3 class="day-name">{{ dia }}</h3>
+          <span class="day-date">
+            {{ getFechaDeFranja(getHorariosPorDia(dia)[0] || { dia_semana: dia }) | date:'dd/MM' }}
+          </span>
+        </div>
+        <div class="day-stats">
+          <span class="slots-count">{{ getHorariosPorDia(dia).length }} franjas</span>
+        </div>
+      </div>
+
+      <!-- Time Slots -->
+      <div class="time-slots">
+        <div 
+          class="time-slot-card"
+          *ngFor="let h of getHorariosPorDia(dia)"
+          [class.available]="!isReservado(h) && !isPastFranja(h)"
+          [class.reserved]="isReservado(h) && !isMyReserva(h)"
+          [class.my-reservation]="isMyReserva(h)"
+          [class.past-slot]="isPastFranja(h)"
+          [class.recurrente]="getReservaPorHorario(h)?.es_recurrente"
+        >
+          <!-- Time Header -->
+          <div class="slot-header">
+            <div class="time-info">
+              <span class="time-range">
+                {{ h.hora_inicio | slice:0:5 }} - {{ h.hora_fin | slice:0:5 }}
+              </span>
+              <div class="slot-status">
+                <mat-icon 
+                  class="status-icon"
+                  [class.available]="!isReservado(h) && !isPastFranja(h)"
+                  [class.reserved]="isReservado(h) && !isMyReserva(h)"
+                  [class.my-reserved]="isMyReserva(h)"
+                  [class.past]="isPastFranja(h)"
+                >
+                  {{ getStatusIcon(h) }}
+                </mat-icon>
+                <span class="status-text">{{ getStatusText(h) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slot Actions -->
+          <div class="slot-actions">
+            <!-- Professor Actions -->
+            <ng-container *ngIf="!isAdmin">
+              <!-- Reserve/Cancel Button -->
+              <button
+                mat-flat-button
+                class="slot-action-btn"
+                [class.reserve-btn]="!isMyReserva(h)"
+                [class.cancel-btn]="isMyReserva(h)"
+                [disabled]="
+                  isPastFranja(h) ||
+                  getReservaPorHorario(h)?.es_recurrente ||
+                  (isReservado(h) && !isMyReserva(h))
+                "
+                (click)="toggleReserva(h)"
+                *ngIf="!isPastFranja(h) && (!isReservado(h) || isMyReserva(h))"
+              >
+                <mat-icon>{{ isMyReserva(h) ? 'cancel' : 'event_available' }}</mat-icon>
+                {{ isMyReserva(h) ? 'Cancelar' : 'Reservar' }}
+                <span *ngIf="getReservaPorHorario(h)?.es_recurrente" class="badge">♻</span>
+              </button>
+
+              <!-- Occupied Button -->
+              <button
+                mat-flat-button
+                class="slot-action-btn occupied-btn"
+                disabled
+                *ngIf="isReservado(h) && !isMyReserva(h) && !isPastFranja(h)"
+              >
+                <mat-icon>event_busy</mat-icon>
+                Ocupado
+              </button>
+
+              <!-- Past Slot Button -->
+              <button
+                mat-flat-button
+                class="slot-action-btn past-btn"
+                disabled
+                *ngIf="isPastFranja(h)"
+              >
+                <mat-icon>schedule</mat-icon>
+                No disponible
+              </button>
+            </ng-container>
+
+            <!-- Admin Actions -->
+            <ng-container *ngIf="isAdmin">
+              <div class="admin-slot-actions">
+                <button
+                  mat-icon-button
+                  class="admin-action-btn cancel-reservation-btn"
+                  (click)="borrarReserva(getReservaPorHorario(h))"
+                  matTooltip="Cancelar reserva"
+                  *ngIf="isReservado(h)"
+                >
+                  <mat-icon>event_busy</mat-icon>
+                </button>
+
+                <button
+                  mat-icon-button
+                  class="admin-action-btn delete-slot-btn"
+                  (click)="borrar(h)"
+                  matTooltip="Eliminar franja"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-day" *ngIf="getHorariosPorDia(dia).length === 0">
+          <mat-icon>event_busy</mat-icon>
+          <p>No hay franjas disponibles</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<mat-card>
+  <h2>Prestar elemento por QR</h2>
+
+  <!-- Selector de stock -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Stock</mat-label>
+    <input matInput type="number" [(ngModel)]="stock" min="1" />
+  </mat-form-field>
+
+  <!-- Selector de grupo -->
+  <mat-form-field appearance="outline" class="full-width">
+  <mat-label>Grupo</mat-label>
+ <mat-select 
+  [(ngModel)]="grupoSeleccionado" 
+  (selectionChange)="cargarAlumnos()"
+  [compareWith]="compareGrupos"
+>
+  <mat-option *ngFor="let g of grupos" [value]="g.id.toString()">
+    {{ g.nombre }}
+  </mat-option>
+</mat-select>
+</mat-form-field>
+
+<!-- Selector de alumno (opcional) -->
+<mat-form-field appearance="outline" class="full-width" *ngIf="alumnos.length > 0">
+  <mat-label>Alumno (opcional)</mat-label>
+  <mat-select [(ngModel)]="alumnoSeleccionado">
+    <mat-option [value]="null">Sin asignar</mat-option>
+    <mat-option *ngFor="let a of alumnos" [value]="a.id_alumno">
+      {{ a.nombre }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<!-- Selector de cámara -->
+<mat-form-field appearance="outline" *ngIf="hasDevices" class="full-width">
+  <mat-label>Seleccionar cámara</mat-label>
+  <mat-select [(ngModel)]="selectedDevice">
+    <mat-option *ngFor="let d of availableDevices" [value]="d">
+      {{ d.label || ('Cámara ' + (availableDevices.indexOf(d) + 1)) }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+  <!-- Botón para iniciar escaneo -->
+  <button mat-flat-button color="primary" (click)="iniciarEscaneo()">
+    <mat-icon>qr_code_scanner</mat-icon>
+    Iniciar escaneo QR
+  </button>
+
+  <!-- Escáner -->
+  <div *ngIf="escaneando" class="scanner-container">
+    <mat-form-field appearance="outline" *ngIf="hasDevices" class="full-width">
+      <mat-label>Seleccionar cámara</mat-label>
+      <mat-select [(ngModel)]="selectedDevice">
+        <mat-option *ngFor="let d of availableDevices" [value]="d.deviceId">
+          {{ d.label || ('Cámara ' + (availableDevices.indexOf(d) + 1)) }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <zxing-scanner
+      [device]="selectedDevice"
+      [formats]="formats"
+      (camerasFound)="onCamerasFound($event)"
+      (permissionResponse)="onPermissionResponse($event)"
+      (scanSuccess)="handleScan($event)"
+      class="scanner">
+    </zxing-scanner>
+  </div>
+</mat-card>

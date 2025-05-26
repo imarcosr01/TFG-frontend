@@ -1,0 +1,198 @@
+<app-unified-navbar></app-unified-navbar>
+
+<div class="modern-groups-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="page-title">
+      <mat-icon class="title-icon">group</mat-icon>
+      <div class="title-text">
+        <h1>Mis Grupos de Trabajo</h1>
+        <p>Gestiona tus grupos y estudiantes</p>
+      </div>
+    </div>
+    
+    <!-- Search and Filters -->
+    <div class="filters-section">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar grupo</mat-label>
+        <input
+          matInput
+          type="text"
+          [(ngModel)]="termBusqueda"
+          (ngModelChange)="aplicarFiltros()"
+          placeholder="Nombre del grupo..."
+        />
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filtrar por clase</mat-label>
+        <mat-select
+          [(ngModel)]="claseSeleccionada"
+          (selectionChange)="aplicarFiltros()"
+        >
+          <mat-option value="">Todas las clases</mat-option>
+          <mat-option 
+            *ngFor="let clase of clases" 
+            [value]="clase.id_clase.toString()"
+          >
+            {{ clase.nombre }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>filter_list</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Actions Panel -->
+  <div class="actions-panel">
+    <div class="actions-container">
+      <button 
+        mat-flat-button 
+        class="action-btn primary-btn"
+        (click)="router.navigate(['/grupos-trabajo/crear'])"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Crear Nuevo Grupo
+      </button>
+      
+      <div class="results-info">
+        <span class="results-count">{{ totalItems }} grupos encontrados</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="loading-content">
+      <mat-spinner diameter="48" strokeWidth="4"></mat-spinner>
+      <p class="loading-text">Cargando grupos...</p>
+    </div>
+  </div>
+
+  <!-- Groups Grid -->
+  <div class="groups-grid" *ngIf="!isLoading">
+    <div 
+      class="group-card"
+      *ngFor="let grupo of filteredGrupos"
+      [class.expanded]="expandedGroup === grupo.id_grupo"
+    >
+      <!-- Group Header -->
+      <div class="group-header" (click)="toggleExpansion(grupo.id_grupo)">
+        <div class="group-info">
+          <div class="group-main-info">
+            <h3 class="group-name">{{ grupo.nombre }}</h3>
+            <span class="group-class">{{ grupo.clase?.nombre || 'Sin clase asignada' }}</span>
+          </div>
+          <div class="group-stats">
+            <div class="stat-item">
+              <mat-icon class="stat-icon">people</mat-icon>
+              <span class="stat-label">estudiantes</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="group-actions">
+          <button
+            mat-icon-button
+            class="expand-btn"
+            [class.expanded]="expandedGroup === grupo.id_grupo"
+          >
+            <mat-icon>expand_more</mat-icon>
+          </button>
+          
+        
+          
+          <button
+            mat-icon-button
+            class="action-icon-btn delete-btn"
+            (click)="$event.stopPropagation(); eliminarGrupo(grupo.id_grupo)"
+            matTooltip="Eliminar grupo"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Expanded Content -->
+      <div 
+        class="group-details"
+        *ngIf="expandedGroup === grupo.id_grupo"
+      >
+        <!-- Students Loading -->
+        <div class="students-loading" *ngIf="isLoadingAlumnos(grupo)">
+          <mat-spinner diameter="32" strokeWidth="3"></mat-spinner>
+          <span>Cargando estudiantes...</span>
+        </div>
+
+        <!-- Students List -->
+        <div class="students-section" *ngIf="grupo.alumnosGrupo && grupo.alumnosGrupo.length > 0">
+          <div class="section-header">
+            <mat-icon>people</mat-icon>
+            <h4>Estudiantes del Grupo</h4>
+          </div>
+          
+          <div class="students-grid">
+            <div 
+              class="student-card"
+              *ngFor="let alumno of grupo.alumnosGrupo"
+            >
+              <div class="student-avatar">
+                <mat-icon>person</mat-icon>
+              </div>
+              <div class="student-info">
+                <span class="student-name">{{ alumno.nombre }} {{ alumno.apellido }}</span>
+              
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty Students State -->
+        <div class="empty-students" *ngIf="grupo.alumnosGrupo && grupo.alumnosGrupo.length === 0 && !isLoadingAlumnos(grupo)">
+          <mat-icon>person_off</mat-icon>
+          <p>No hay estudiantes en este grupo</p>
+          <button mat-flat-button class="add-students-btn">
+            <mat-icon>person_add</mat-icon>
+            Agregar Estudiantes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredGrupos.length === 0 && !isLoading">
+      <div class="empty-content">
+        <mat-icon>group_off</mat-icon>
+        <h3>No se encontraron grupos</h3>
+        <p *ngIf="termBusqueda || claseSeleccionada">
+          Intenta ajustar los filtros de búsqueda
+        </p>
+        <p *ngIf="!termBusqueda && !claseSeleccionada">
+          Comienza creando tu primer grupo de trabajo
+        </p>
+        <button 
+          mat-flat-button 
+          class="create-first-btn"
+          (click)="router.navigate(['/profesor/grupos/crear'])"
+        >
+          <mat-icon>add</mat-icon>
+          Crear Primer Grupo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="!isLoading && filteredGrupos.length > 0">
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="currentPage"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </div>
+</div>

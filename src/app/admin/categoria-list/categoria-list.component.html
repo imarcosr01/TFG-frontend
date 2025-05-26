@@ -1,0 +1,71 @@
+<!-- src/app/components/categorias/categoria-list/categoria-list.component.html -->
+<app-unified-navbar></app-unified-navbar>
+
+<div class="toolbar">
+  <div class="filters">
+    <mat-form-field appearance="outline">
+      <mat-label>Buscar categoría</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Nombre de categoría">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Padre</mat-label>
+      <mat-select [formControl]="parentControl">
+        <mat-option *ngFor="let p of padres" [value]="p">
+          {{ p === 'todas' ? 'Todas' : (p || 'Sin padre') }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  
+  <button *ngIf="isAdmin" mat-flat-button color="primary" (click)="add()">
+    <mat-icon></mat-icon> Nueva Categoría
+  </button>
+</div>
+
+<div class="grid">
+  <mat-card *ngFor="let cat of categoriasFiltradas" class="category-card">
+    <mat-card-header>
+      <div class="card-header-content">
+        <div class="title-section">
+          <mat-card-title>{{ cat.nombre }}</mat-card-title>
+          <mat-card-subtitle>Padre: {{ cat.padre?.nombre || 'Ninguno' }}</mat-card-subtitle>
+        </div>
+        <div class="subcategory-badge" [class]="getSubcategoryBadgeClass(cat)">
+          <mat-icon>{{ getSubcategoryIcon(cat) }}</mat-icon>
+          <span>{{ getSubcategoryCount(cat) }}</span>
+        </div>
+      </div>
+    </mat-card-header>
+    
+    <mat-card-content>
+     
+      
+      <div class="category-info">
+        <div class="category-type" [class]="getCategoryTypeClass(cat)">
+          <mat-icon>{{ getCategoryTypeIcon(cat) }}</mat-icon>
+          <span>{{ getCategoryTypeText(cat) }}</span>
+        </div>
+      </div>
+    </mat-card-content>
+    
+    <mat-card-actions align="end">
+      <button *ngIf="isAdmin" mat-icon-button (click)="edit(cat)" matTooltip="Editar">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button *ngIf="isAdmin" mat-icon-button color="warn" (click)="delete(cat)" matTooltip="Eliminar">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+<!-- Estado vacío -->
+<div *ngIf="categoriasFiltradas.length === 0" class="empty-state">
+  <div class="empty-icon">
+    <mat-icon>category</mat-icon>
+  </div>
+  <h3>No se encontraron categorías</h3>
+  <p>Intenta cambiar los filtros de búsqueda</p>
+</div>

@@ -1,0 +1,142 @@
+<app-unified-navbar></app-unified-navbar>
+
+<div class="modern-form-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="page-title">
+      <mat-icon class="title-icon">{{ editingId ? 'edit' : 'add_circle' }}</mat-icon>
+      <div class="title-text">
+        <h1>{{ editingId ? 'Editar Incidencia' : 'Nueva Incidencia' }}</h1>
+        <p>{{ editingId ? 'Modifica los detalles de la incidencia' : 'Reporta un nuevo problema técnico' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="form-card">
+    <div class="form-header">
+      <div class="form-header-content">
+        <mat-icon class="form-icon">report_problem</mat-icon>
+        <div class="form-title">
+          <h2>Detalles de la Incidencia</h2>
+          <p>Completa todos los campos para reportar el problema</p>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="incidencia-form">
+      <div class="form-content">
+        <!-- Descripción Field -->
+        <div class="form-group">
+          <div class="field-header">
+            <mat-icon class="field-icon">description</mat-icon>
+            <label class="field-label">Descripción del Problema</label>
+          </div>
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Describe detalladamente el problema encontrado</mat-label>
+            <textarea 
+              matInput 
+              formControlName="descripcion"
+              rows="4"
+          
+            ></textarea>
+            <mat-icon matSuffix>notes</mat-icon>
+            <mat-error *ngIf="form.get('descripcion')?.hasError('required')">
+              La descripción es obligatoria
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Selection Fields Row -->
+        <div class="form-row">
+          <!-- Elemento Field -->
+          <div class="form-group">
+            <div class="field-header">
+              <mat-icon class="field-icon">devices</mat-icon>
+              <label class="field-label">Elemento Afectado</label>
+            </div>
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Selecciona el elemento</mat-label>
+              <mat-select formControlName="id_elemento">
+                <mat-option *ngFor="let elem of elementos" [value]="elem.id_elemento">
+                  {{ elem.nombre }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>hardware</mat-icon>
+              <mat-error *ngIf="form.get('id_elemento')?.hasError('required')">
+                Selecciona un elemento
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Clase Field -->
+          <div class="form-group">
+            <div class="field-header">
+              <mat-icon class="field-icon">class</mat-icon>
+              <label class="field-label">Clase Relacionada</label>
+            </div>
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Selecciona la clase</mat-label>
+              <mat-select formControlName="id_clase">
+                <mat-option *ngFor="let clase of clases" [value]="clase.id_clase">
+                  {{ clase.nombre }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>school</mat-icon>
+              <mat-error *ngIf="form.get('id_clase')?.hasError('required')">
+                Selecciona una clase
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="info-card">
+          <div class="info-header">
+            <mat-icon class="info-icon">info</mat-icon>
+            <span class="info-title">Información Importante</span>
+          </div>
+          <div class="info-content">
+            <div class="info-item">
+              <mat-icon class="info-bullet">check_circle</mat-icon>
+              <span>Describe el problema con el mayor detalle posible</span>
+            </div>
+            <div class="info-item">
+              <mat-icon class="info-bullet">check_circle</mat-icon>
+              <span>Incluye pasos realizados antes del problema si es relevante</span>
+            </div>
+            <div class="info-item">
+              <mat-icon class="info-bullet">check_circle</mat-icon>
+              <span>Especifica el elemento y clase para una mejor gestión</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <div class="actions-container">
+          <button 
+            type="button" 
+            mat-flat-button 
+            class="action-btn secondary-btn"
+            routerLink="/incidencias"
+          >
+            <mat-icon>arrow_back</mat-icon>
+            Cancelar
+          </button>
+          
+          <button 
+            type="submit" 
+            mat-flat-button 
+            class="action-btn primary-btn"
+            [disabled]="form.invalid"
+          >
+            <mat-icon>{{ editingId ? 'save' : 'send' }}</mat-icon>
+            {{ editingId ? 'Actualizar Incidencia' : 'Reportar Incidencia' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

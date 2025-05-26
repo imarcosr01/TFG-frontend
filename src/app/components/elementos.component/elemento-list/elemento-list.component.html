@@ -1,0 +1,166 @@
+<app-unified-navbar></app-unified-navbar>
+
+
+<div class="modern-elementos-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="page-title">
+      <mat-icon class="title-icon">inventory_2</mat-icon>
+      <div class="title-text">
+        <h1>Gestión de Elementos</h1>
+        <p>Administra el inventario y stock de elementos</p>
+      </div>
+    </div>
+    
+    <!-- Search and Filters -->
+    <div class="filters-section">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar elemento</mat-label>
+        <input
+          matInput
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Nombre o código QR..."
+        />
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filtrar por categoría</mat-label>
+        <mat-select [formControl]="categoryControl">
+          <mat-option *ngFor="let categoria of categorias" [value]="categoria">
+            {{ categoria === 'todas' ? 'Todas las categorías' : categoria }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>filter_list</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Actions Panel -->
+  <div class="actions-panel" *ngIf="isAdmin">
+    <div class="actions-container">
+      <button 
+        mat-flat-button 
+        class="action-btn primary-btn"
+        (click)="addElemento()"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Agregar Nuevo Elemento
+      </button>
+      
+      <div class="results-info">
+        <span class="results-count">{{ elementosFiltrados.length }} elementos encontrados</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elementos Grid -->
+  <div class="elementos-grid" *ngIf="elementosFiltrados.length > 0">
+    <div 
+      class="elemento-card"
+      *ngFor="let elemento of elementosFiltrados"
+    >
+      <!-- Elemento Header -->
+      <div class="elemento-header">
+        <div class="elemento-title">
+          <div class="title-info">
+            <h3>{{ elemento.nombre }}</h3>
+            <span class="qr-code">{{ elemento.codigoQr }}</span>
+          </div>
+          <div class="stock-indicator">
+            <div class="stock-ring">
+              <div 
+                class="ring-progress"
+                [style.--progress-value.%]="getStockPct(elemento)"
+                [style.--progress-color]="getStockPct(elemento) < 20 ? '#d32f2f' : (getStockPct(elemento) < 50 ? '#f57c00' : '#388e3c')"
+              ></div>
+              <span class="stock-percentage">{{ getStockPct(elemento) | number:'1.0-0' }}%</span>
+            </div>
+            <span class="stock-label">Disponible</span>
+          </div>
+        </div>
+        
+        <div class="categoria-tag" *ngIf="elemento.categoria">
+          <mat-icon>category</mat-icon>
+          {{ elemento.categoria.nombre }}
+        </div>
+      </div>
+
+      <!-- Elemento Content -->
+      <div class="elemento-content">
+        <p class="descripcion" *ngIf="elemento.descripcion">
+          {{ elemento.descripcion }}
+        </p>
+
+        <div class="stock-details">
+          <div class="stock-item">
+            <span class="stock-value">{{ elemento.stockTotal }}</span>
+            <span class="stock-label">Total</span>
+          </div>
+          <div class="stock-item">
+            <span class="stock-value">{{ elemento.stockDisponible }}</span>
+            <span class="stock-label">Disponible</span>
+          </div>
+          <div class="stock-item">
+            <span class="stock-value">{{ elemento.stockTotal - elemento.stockDisponible }}</span>
+            <span class="stock-label">En uso</span>
+          </div>
+        </div>
+
+        <div 
+          class="stock-status"
+          [ngClass]="getStockStatusClass(elemento)"
+        >
+          <mat-icon>{{ getStockIcon(elemento) }}</mat-icon>
+          <span>{{ getStockStatusText(elemento) }}</span>
+        </div>
+
+        <div class="actions-bar" *ngIf="isAdmin">
+          <button
+            mat-stroked-button
+            class="action-btn edit-btn"
+            (click)="editElemento(elemento.id)"
+            matTooltip="Editar elemento"
+          >
+            <mat-icon>edit</mat-icon>
+            Editar
+          </button>
+          
+          <button
+            mat-stroked-button
+            class="action-btn delete-btn"
+            (click)="deleteElemento(elemento)"
+            matTooltip="Eliminar elemento"
+          >
+            <mat-icon>delete</mat-icon>
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="elementosFiltrados.length === 0">
+    <div class="empty-content">
+      <mat-icon>inventory_2</mat-icon>
+      <h3>No se encontraron elementos</h3>
+      <p *ngIf="searchControl.value || categoryControl.value !== 'todas'">
+        Intenta ajustar los filtros de búsqueda para encontrar elementos
+      </p>
+      <p *ngIf="!searchControl.value && categoryControl.value === 'todas'">
+        Comienza agregando tu primer elemento al inventario
+      </p>
+      <button 
+        mat-flat-button 
+        class="create-first-btn"
+        (click)="addElemento()"
+        *ngIf="isAdmin"
+      >
+        <mat-icon>add</mat-icon>
+        Agregar Primer Elemento
+      </button>
+    </div>
+  </div>
+</div>

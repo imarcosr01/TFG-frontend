@@ -1,0 +1,179 @@
+<app-unified-navbar></app-unified-navbar>
+
+<div class="modern-incidencias-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="page-title">
+      <mat-icon class="title-icon">report_problem</mat-icon>
+      <div class="title-text">
+        <h1>Mis Incidencias</h1>
+        <p>Gestiona reportes y problemas técnicos</p>
+      </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="filters-section">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filtrar por estado</mat-label>
+        <mat-select
+          [(ngModel)]="filtro"
+          (selectionChange)="changeFiltro($event.value)"
+        >
+          <mat-option value="todas">Todas las incidencias</mat-option>
+          <mat-option value="pendientes">Pendientes</mat-option>
+          <mat-option value="resueltas">Resueltas</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>filter_list</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Actions Panel -->
+  <div class="actions-panel">
+    <div class="actions-container">
+      <button 
+        mat-flat-button 
+        class="action-btn primary-btn"
+        (click)="toNew()"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Nueva Incidencia
+      </button>
+      
+      <div class="results-info">
+        <span class="results-count">{{ incidencias.length }} incidencias encontradas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="cargando">
+    <div class="loading-content">
+      <mat-spinner diameter="48" strokeWidth="4"></mat-spinner>
+      <p class="loading-text">Cargando incidencias...</p>
+    </div>
+  </div>
+
+  <!-- Incidencias Grid -->
+  <div class="incidencias-grid" *ngIf="!cargando">
+    <div 
+      class="incidencia-card"
+      *ngFor="let incidencia of incidencias"
+      [class.resuelta]="incidencia.solucionada"
+    >
+      <!-- Incidencia Header -->
+      <div class="incidencia-header">
+        <div class="incidencia-info">
+          <div class="incidencia-main-info">
+            <div class="status-badge" [class.solved]="incidencia.solucionada">
+              <mat-icon>{{ incidencia.solucionada ? 'check_circle' : 'pending' }}</mat-icon>
+              <span>{{ incidencia.solucionada ? 'Resuelta' : 'Pendiente' }}</span>
+            </div>
+          </div>
+          <div class="incidencia-details">
+            <div class="detail-item">
+              <mat-icon class="detail-icon">class</mat-icon>
+              <span class="detail-label">{{ incidencia.clase?.nombre || 'Sin clase' }}</span>
+            </div>
+            <div class="detail-item">
+              <mat-icon class="detail-icon">devices</mat-icon>
+              <span class="detail-label">{{ incidencia.elemento?.nombre || 'Sin elemento' }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="incidencia-actions">
+          <button
+            mat-icon-button
+            class="action-icon-btn edit-btn"
+            (click)="toEdit(incidencia.id_incidencia)"
+            matTooltip="Editar incidencia"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          
+          <button
+            mat-icon-button
+            class="action-icon-btn solve-btn"
+            (click)="markSolved(incidencia)"
+            matTooltip="Marcar como resuelta"
+            *ngIf="!incidencia.solucionada"
+          >
+            <mat-icon>done</mat-icon>
+          </button>
+          
+          <button
+            mat-icon-button
+            class="action-icon-btn delete-btn"
+            (click)="delete(incidencia.id_incidencia)"
+            matTooltip="Eliminar incidencia"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Incidencia Content -->
+      <div class="incidencia-content">
+        <div class="description-section">
+          <div class="section-header">
+            <mat-icon>description</mat-icon>
+            <h4>Descripción del Problema</h4>
+          </div>
+          <p class="description-text">{{ incidencia.descripcion }}</p>
+        </div>
+
+        <div class="meta-info">
+          <div class="meta-item">
+            <mat-icon class="meta-icon">person</mat-icon>
+            <div class="meta-content">
+              <span class="meta-label">Reportado por</span>
+              <span class="meta-value">{{ incidencia.profesor?.nombre }} {{ incidencia.profesor?.apellido }}</span>
+            </div>
+          </div>
+          
+          <div class="meta-item">
+            <mat-icon class="meta-icon">schedule</mat-icon>
+            <div class="meta-content">
+              <span class="meta-label">Fecha de reporte</span>
+              <span class="meta-value">{{ incidencia.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+
+          <div class="meta-item" *ngIf="incidencia.solucionada">
+            <mat-icon class="meta-icon">event_available</mat-icon>
+            <div class="meta-content">
+              <span class="meta-label">Fecha de resolución</span>
+              <span class="meta-value">{{ incidencia.updated_at | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="incidencias.length === 0 && !cargando">
+      <div class="empty-content">
+        <mat-icon>report_off</mat-icon>
+        <h3>No se encontraron incidencias</h3>
+        <p *ngIf="filtro === 'pendientes'">
+          No hay incidencias pendientes por resolver
+        </p>
+        <p *ngIf="filtro === 'resueltas'">
+          No hay incidencias marcadas como resueltas
+        </p>
+        <p *ngIf="filtro === 'todas'">
+          Comienza reportando tu primera incidencia
+        </p>
+        <button 
+          mat-flat-button 
+          class="create-first-btn"
+          (click)="toNew()"
+        >
+          <mat-icon>add</mat-icon>
+          Reportar Primera Incidencia
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

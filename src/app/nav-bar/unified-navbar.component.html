@@ -1,0 +1,42 @@
+<!-- src/app/shared/unified-navbar/unified-navbar.component.html -->
+<mat-toolbar class="navbar" [class.admin-theme]="isAdmin" [class.professor-theme]="isProfesor">
+  <div class="navbar-content">
+    <!-- Logo/Título de la aplicación -->
+    <div class="navbar-brand">
+      <mat-icon class="brand-icon">school</mat-icon>
+      <span class="brand-text">Sistema Académico</span>
+    </div>
+
+    <!-- Navegación principal -->
+    <nav class="navbar-nav">
+      <a 
+        mat-button 
+        *ngFor="let link of visibleLinks" 
+        [routerLink]="link.path"
+        routerLinkActive="active-link"
+        [matTooltip]="link.label"
+        class="nav-link"
+      >
+        <mat-icon>{{ link.icon }}</mat-icon>
+        <span class="nav-text">{{ link.label }}</span>
+      </a>
+    </nav>
+
+    <!-- Información del usuario y logout -->
+    <div class="navbar-user">
+      <div class="user-info">
+        <span class="user-name">{{ userName }}</span>
+        <span class="user-role">{{ userRole }}</span>
+      </div>
+      
+      <button 
+        mat-icon-button 
+        (click)="logout()" 
+        matTooltip="Cerrar Sesión"
+        class="logout-btn"
+      >
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </div>
+</mat-toolbar>

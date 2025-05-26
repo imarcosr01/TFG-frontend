@@ -1,0 +1,29 @@
+<app-unified-navbar></app-unified-navbar>
+
+<div class="form-wrapper">
+  <h2>{{ editing ? 'Editar Categoría' : 'Nueva Categoría' }}</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-content">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" placeholder="Nombre de la categoría" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Padre</mat-label>
+      <mat-select formControlName="idPadre">
+        <mat-option [value]="null">Sin padre</mat-option>
+        <mat-option *ngFor="let cat of categorias" [value]="cat.id">
+          {{ cat.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="button-group">
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+        {{ editing ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button mat-button type="button" (click)="cancel()">Cancelar</button>
+    </div>
+  </form>
+</div>

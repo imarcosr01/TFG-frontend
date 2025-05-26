@@ -1,0 +1,100 @@
+<!-- src/app/components/login/login.component.html -->
+<div class="modern-login-container">
+  <div class="login-background">
+    <!-- Animated background elements -->
+    <div class="bg-element bg-element-1"></div>
+    <div class="bg-element bg-element-2"></div>
+    <div class="bg-element bg-element-3"></div>
+  </div>
+
+  <div class="login-content">
+    <!-- Header Section -->
+    <div class="login-header">
+      <div class="logo-section">
+        <div class="logo-icon">
+          <mat-icon>school</mat-icon>
+        </div>
+        <div class="logo-text">
+          <h1>Sistema Educativo</h1>
+          <p>Portal de acceso para profesores</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Form Card -->
+    <div class="login-card">
+      <div class="card-header">
+        <h2>Iniciar Sesión</h2>
+        <p>Ingresa tus credenciales para acceder</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <!-- Email Field -->
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Correo Electrónico</mat-label>
+            <input
+              matInput
+              type="email"
+              formControlName="email"
+              placeholder="profesor@ejemplo.com"
+              autocomplete="email"
+            />
+            <mat-icon matPrefix class="field-icon">email</mat-icon>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+              El correo electrónico es requerido
+            </mat-error>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+              Ingresa un correo electrónico válido
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Contraseña</mat-label>
+            <input
+              matInput
+              type="password"
+              formControlName="password"
+              placeholder="Tu contraseña"
+              autocomplete="current-password"
+            />
+            <mat-icon matPrefix class="field-icon">lock</mat-icon>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+              La contraseña es requerida
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            mat-flat-button
+            class="login-btn"
+            [disabled]="!loginForm.valid"
+          >
+            <mat-icon>login</mat-icon>
+            <span>Iniciar Sesión</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Additional Options -->
+      <div class="card-footer">
+        <div class="help-links">
+      
+          <span class="separator">•</span>
+        
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>&copy; 2024 Sistema Educativo. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</div>

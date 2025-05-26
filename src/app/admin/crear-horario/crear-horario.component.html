@@ -1,0 +1,23 @@
+ 
+<app-unified-navbar></app-unified-navbar>
+ 
+ <!-- src/app/admin/crear-horario/crear-horario.component.html -->
+<h2>Crear Franja de Horario</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Día</mat-label>
+    <mat-select formControlName="dia_semana">
+      <mat-option *ngFor="let d of dias" [value]="d">{{ d }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Hora Inicio</mat-label>
+    <input matInput type="time" formControlName="hora_inicio" />
+  </mat-form-field>
+
+  <div class="buttons">
+    <button mat-flat-button color="primary" type="submit">Guardar</button>
+    <button mat-button type="button" (click)="cancelar()">Cancelar</button>
+  </div>
+</form>

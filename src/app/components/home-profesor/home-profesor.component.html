@@ -1,0 +1,134 @@
+<!-- src/app/components/home-profesor/home-profesor.component.html -->
+<div class="modern-home-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="welcome-content">
+      <div class="welcome-icon">
+        <mat-icon>school</mat-icon>
+      </div>
+      <div class="welcome-text">
+        <h1>Bienvenido, Profesor</h1>
+        <p>Panel de control principal - Selecciona una opción para comenzar</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Cards Grid -->
+  <div class="navigation-grid">
+    <!-- Grupos de Trabajo Card -->
+    <div class="nav-card primary-card">
+      <button mat-flat-button class="nav-button" routerLink="/grupos-trabajo/listar">
+        <div class="card-content">
+          <div class="card-icon">
+            <mat-icon>groups</mat-icon>
+          </div>
+          <div class="card-info">
+            <h3>Grupos de Trabajo</h3>
+            <p>Gestiona y organiza los grupos de estudiantes</p>
+          </div>
+          <div class="card-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Consultar Elementos Card -->
+    <div class="nav-card secondary-card">
+      <button mat-flat-button class="nav-button" routerLink="/elementos">
+        <div class="card-content">
+          <div class="card-icon">
+            <mat-icon>inventory</mat-icon>
+          </div>
+          <div class="card-info">
+            <h3>Consultar Elementos</h3>
+            <p>Revisa el inventario de elementos disponibles</p>
+          </div>
+          <div class="card-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Escanear QR Card -->
+    <div class="nav-card accent-card">
+      <button mat-flat-button class="nav-button" routerLink="/prestar-elementos/qr">
+        <div class="card-content">
+          <div class="card-icon">
+            <mat-icon>qr_code_scanner</mat-icon>
+          </div>
+          <div class="card-info">
+            <h3>Escanear para Préstamo</h3>
+            <p>Escanea códigos QR para gestionar préstamos</p>
+          </div>
+          <div class="card-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Consultar Horario Card -->
+    <div class="nav-card info-card">
+      <button mat-flat-button class="nav-button" routerLink="/horarios">
+        <div class="card-content">
+          <div class="card-icon">
+            <mat-icon>schedule</mat-icon>
+          </div>
+          <div class="card-info">
+            <h3>Consultar Horario</h3>
+            <p>Revisa tu horario de clases y actividades</p>
+          </div>
+          <div class="card-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Préstamos Card -->
+    <div class="nav-card success-card">
+      <button mat-flat-button class="nav-button" routerLink="/prestamos">
+        <div class="card-content">
+          <div class="card-icon">
+            <mat-icon>assignment_return</mat-icon>
+          </div>
+          <div class="card-info">
+            <h3>Préstamos</h3>
+            <p>Administra préstamos activos y devoluciones</p>
+          </div>
+          <div class="card-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Incidencias Card -->
+    <div class="nav-card warning-card">
+      <button mat-flat-button class="nav-button" routerLink="/incidencias">
+        <div class="card-content">
+          <div class="card-icon">
+            <mat-icon>report_problem</mat-icon>
+          </div>
+          <div class="card-info">
+            <h3>Incidencias</h3>
+            <p>Reporta y gestiona incidencias del sistema</p>
+          </div>
+          <div class="card-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Logout Section -->
+  <div class="logout-section">
+    <button mat-stroked-button class="logout-btn" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Cerrar Sesión</span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,216 @@
+<app-unified-navbar></app-unified-navbar>
+
+<div class="modern-crear-grupo-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="page-title">
+      <mat-icon class="title-icon">add_circle</mat-icon>
+      <div class="title-text">
+        <h1>Crear Nuevo Grupo</h1>
+        <p>Configura tu grupo de trabajo</p>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button 
+        mat-stroked-button 
+        class="action-btn secondary-btn"
+        (click)="router.navigate(['/grupos-trabajo/listar'])"
+      >
+        <mat-icon>arrow_back</mat-icon>
+        Volver a Grupos
+      </button>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="form-card">
+    <form [formGroup]="grupoForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">info</mat-icon>
+          <h3>Información Básica</h3>
+        </div>
+        
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Nombre del Grupo</mat-label>
+            <input 
+              matInput 
+              formControlName="nombre" 
+              placeholder="Ej: Grupo de Matemáticas A"
+            />
+            <mat-icon matPrefix>group</mat-icon>
+            <mat-error *ngIf="grupoForm.get('nombre')?.hasError('required')">
+              El nombre del grupo es requerido
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Seleccionar Clase</mat-label>
+            <mat-select formControlName="idClase">
+              <mat-option value="">-- Selecciona una clase --</mat-option>
+              <mat-option 
+                *ngFor="let clase of clases" 
+                [value]="clase.id_clase"
+              >
+                {{ clase.nombre }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>school</mat-icon>
+            <mat-error *ngIf="grupoForm.get('idClase')?.hasError('required')">
+              Debe seleccionar una clase
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-divider class="section-divider"></mat-divider>
+
+      <!-- Students Selection Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">people</mat-icon>
+          <h3>Selección de Estudiantes</h3>
+          <span class="students-count" *ngIf="grupoForm.get('alumnos')?.value?.length > 0">
+            {{ grupoForm.get('alumnos')?.value?.length }} seleccionados
+          </span>
+        </div>
+
+        <!-- Filter for students -->
+        <div class="students-filter" *ngIf="alumnos.length > 0">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Buscar estudiante</mat-label>
+            <input 
+              matInput 
+              [(ngModel)]="filtroAlumnos" 
+              [ngModelOptions]="{standalone: true}"
+              placeholder="Filtrar por nombre o apellido..."
+            />
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+          
+          <!-- Mostrar contador de resultados filtrados -->
+          <div class="filter-results" *ngIf="filtroAlumnos.trim() && alumnosFiltrados.length !== alumnos.length">
+            <span class="results-text">
+              Mostrando {{ alumnosFiltrados.length }} de {{ alumnos.length }} estudiantes
+            </span>
+            <button 
+              mat-icon-button 
+              class="clear-filter-btn"
+              (click)="filtroAlumnos = ''"
+              matTooltip="Limpiar filtro"
+            >
+              <mat-icon>clear</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Selected Students Chips -->
+        <div class="selected-students" *ngIf="grupoForm.get('alumnos')?.value?.length > 0">
+          <div class="chips-header">
+            <span class="chips-title">Estudiantes Seleccionados:</span>
+          </div>
+          <div class="chips-container">
+            <mat-chip-set>
+              <mat-chip 
+                *ngFor="let idAlumno of grupoForm.get('alumnos')?.value"
+                [removable]="true"
+                (removed)="removeAlumno(idAlumno)"
+                class="student-chip"
+              >
+                <mat-icon matChipAvatar>person</mat-icon>
+                {{ getAlumnoNombre(idAlumno) }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+
+        <!-- Available Students Grid -->
+        <div class="students-selection" *ngIf="alumnosFiltrados.length > 0">
+          <div class="students-grid">
+            <div 
+              class="student-card"
+              *ngFor="let alumno of alumnosFiltrados | slice:0:20"
+              [class.selected]="grupoForm.get('alumnos')?.value?.includes(alumno.id_alumno)"
+              (click)="toggleStudent(alumno.id_alumno)"
+            >
+              <div class="student-avatar">
+                <mat-icon>person</mat-icon>
+              </div>
+              <div class="student-info">
+                <span class="student-name">{{ alumno.nombre }} {{ alumno.apellido }}</span>
+              </div>
+              <div class="selection-indicator">
+                <mat-icon *ngIf="grupoForm.get('alumnos')?.value?.includes(alumno.id_alumno)">
+                  check_circle
+                </mat-icon>
+                <mat-icon *ngIf="!grupoForm.get('alumnos')?.value?.includes(alumno.id_alumno)" class="add-icon">
+                  add_circle_outline
+                </mat-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No results found for filter -->
+        <div class="no-results" *ngIf="filtroAlumnos.trim() && alumnosFiltrados.length === 0 && alumnos.length > 0">
+          <mat-icon>search_off</mat-icon>
+          <p>No se encontraron estudiantes que coincidan con "{{ filtroAlumnos }}"</p>
+          <button 
+            mat-stroked-button 
+            class="clear-filter-btn-alt"
+            (click)="filtroAlumnos = ''"
+          >
+            <mat-icon>clear</mat-icon>
+            Limpiar filtro
+          </button>
+        </div>
+
+        <!-- Empty state for students -->
+        <div class="empty-students" *ngIf="alumnos.length === 0 && grupoForm.get('idClase')?.value">
+          <mat-icon>person_off</mat-icon>
+          <p>No hay estudiantes disponibles en esta clase</p>
+        </div>
+
+        <!-- No class selected state -->
+        <div class="no-class-selected" *ngIf="!grupoForm.get('idClase')?.value">
+          <mat-icon>school</mat-icon>
+          <p>Selecciona una clase para ver los estudiantes disponibles</p>
+        </div>
+
+        <!-- Validation error for students -->
+        <div class="validation-error" *ngIf="grupoForm.get('alumnos')?.hasError('required') && grupoForm.get('alumnos')?.touched">
+          <mat-icon>error</mat-icon>
+          <span>Debe seleccionar al menos un estudiante</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="form-actions">
+        <button 
+          type="button"
+          mat-stroked-button 
+          class="action-btn secondary-btn"
+          (click)="router.navigate(['/grupos-trabajo/listar'])"
+        >
+          <mat-icon>cancel</mat-icon>
+          Cancelar
+        </button>
+        
+        <button 
+          type="submit"
+          mat-flat-button 
+          class="action-btn primary-btn"
+          [disabled]="grupoForm.invalid"
+        >
+          <mat-icon>save</mat-icon>
+          Crear Grupo
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,174 @@
+<app-unified-navbar></app-unified-navbar>
+
+<div class="modern-prestamos-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="page-title">
+      <mat-icon class="title-icon">assignment</mat-icon>
+      <div class="title-text">
+        <h1>Mis Préstamos</h1>
+        <p>Gestiona los préstamos de elementos</p>
+      </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="filters-section">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filtrar préstamos</mat-label>
+        <mat-select [(ngModel)]="filtro" (selectionChange)="changeFiltro(filtro)">
+          <mat-option value="todos">Todos los préstamos</mat-option>
+          <mat-option value="pendientes">Pendientes</mat-option>
+          <mat-option value="devueltos">Devueltos</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>filter_list</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Actions Panel -->
+  <div class="actions-panel">
+    <div class="actions-container">
+      <button 
+        mat-flat-button 
+        class="action-btn primary-btn"
+        (click)="toNew()"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Nuevo Préstamo
+      </button>
+      
+      <div class="results-info">
+        <span class="results-count">{{ prestamos.length }} préstamos encontrados</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="cargando">
+    <div class="loading-content">
+      <mat-spinner diameter="48" strokeWidth="4"></mat-spinner>
+      <p class="loading-text">Cargando préstamos...</p>
+    </div>
+  </div>
+
+  <!-- Prestamos Grid -->
+  <div class="prestamos-grid" *ngIf="!cargando">
+    <div 
+      class="prestamo-card"
+      *ngFor="let prestamo of prestamos"
+      [class.devuelto]="prestamo.devuelto"
+      [class.pendiente]="!prestamo.devuelto"
+    >
+      <!-- Prestamo Header -->
+      <div class="prestamo-header">
+        <div class="prestamo-info">
+          <div class="prestamo-main-info">
+            <h3 class="prestamo-destino">{{ formatDestino(prestamo) }}</h3>
+            <span class="prestamo-fecha">{{ prestamo.fecha_prestamo | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="prestamo-stats">
+            <div class="stat-item">
+              <mat-icon class="stat-icon">inventory</mat-icon>
+              <span class="stat-value">{{ prestamo.elementos.length }}</span>
+              <span class="stat-label">elementos</span>
+            </div>
+            <div class="status-badge" [class.devuelto]="prestamo.devuelto" [class.pendiente]="!prestamo.devuelto">
+              <mat-icon>{{ prestamo.devuelto ? 'check_circle' : 'schedule' }}</mat-icon>
+              {{ prestamo.devuelto ? 'Devuelto' : 'Pendiente' }}
+            </div>
+          </div>
+        </div>
+        
+        <div class="prestamo-actions">
+          <button
+            mat-icon-button
+            class="action-icon-btn edit-btn"
+            (click)="toEdit(prestamo.id_prestamo)"
+            matTooltip="Editar préstamo"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          
+          
+          <button
+            mat-icon-button
+            class="action-icon-btn delete-btn"
+            (click)="delete(prestamo.id_prestamo)"
+            matTooltip="Eliminar préstamo"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Prestamo Details -->
+      <div class="prestamo-details">
+        <!-- Elementos Section -->
+        <div class="elementos-section">
+          <div class="section-header">
+            <mat-icon>inventory_2</mat-icon>
+            <h4>Elementos Prestados</h4>
+          </div>
+          
+          <div class="elementos-grid">
+            <div 
+              class="elemento-card"
+              *ngFor="let pe of prestamo.elementos"
+            >
+              <div class="elemento-icon">
+                <mat-icon>widgets</mat-icon>
+              </div>
+              <div class="elemento-info">
+                <span class="elemento-nombre">{{ pe.elemento.nombre }}</span>
+                <span class="elemento-cantidad">Cantidad: {{ pe.cantidad }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info adicional -->
+        <div class="info-adicional" *ngIf="prestamo.profesor || prestamo.alumno || prestamo.grupo">
+          <div class="info-item" *ngIf="prestamo.profesor">
+            <mat-icon>person</mat-icon>
+            <span class="info-label">Profesor:</span>
+            <span class="info-value">{{ prestamo.profesor.nombre }}</span>
+          </div>
+          
+          <div class="info-item" *ngIf="prestamo.alumno">
+            <mat-icon>school</mat-icon>
+            <span class="info-label">Alumno:</span>
+            <span class="info-value">{{ prestamo.alumno.nombre }} {{ prestamo.alumno.apellido }}</span>
+          </div>
+          
+          <div class="info-item" *ngIf="prestamo.grupo">
+            <mat-icon>group</mat-icon>
+            <span class="info-label">Grupo:</span>
+            <span class="info-value">{{ prestamo.grupo.nombre }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="prestamos.length === 0 && !cargando">
+      <div class="empty-content">
+        <mat-icon>assignment_late</mat-icon>
+        <h3>No se encontraron préstamos</h3>
+        <p *ngIf="filtro !== 'todos'">
+          No hay préstamos {{ filtro }} en este momento
+        </p>
+        <p *ngIf="filtro === 'todos'">
+          Comienza creando tu primer préstamo
+        </p>
+        <button 
+          mat-flat-button 
+          class="create-first-btn"
+          (click)="toNew()"
+        >
+          <mat-icon>add</mat-icon>
+          Crear Primer Préstamo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

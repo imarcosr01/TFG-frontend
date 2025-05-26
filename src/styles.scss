@@ -1,0 +1,11 @@
+@use 'colors' as colors;
+
+html, body { 
+  height: 100%; 
+  background: colors.$background;
+}
+
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
