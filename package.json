@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:taller-frontend": "node dist/taller-frontend/server/server.mjs",
-    "vercel-build": "ng build --configuration production"
+    "vercel-build": "ng build --configuration=production --output-mode=static --ssr=false --prerender=false"
+  
   },
   "private": true,
   "dependencies": {

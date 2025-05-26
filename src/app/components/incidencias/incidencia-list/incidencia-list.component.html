@@ -73,11 +73,11 @@
           <div class="incidencia-details">
             <div class="detail-item">
               <mat-icon class="detail-icon">class</mat-icon>
-              <span class="detail-label">{{ incidencia.clase?.nombre || 'Sin clase' }}</span>
+              <span class="detail-label">{{ incidencia.clase.nombre || 'Sin clase' }}</span>
             </div>
             <div class="detail-item">
               <mat-icon class="detail-icon">devices</mat-icon>
-              <span class="detail-label">{{ incidencia.elemento?.nombre || 'Sin elemento' }}</span>
+              <span class="detail-label">{{ incidencia.elemento.nombre || 'Sin elemento' }}</span>
             </div>
           </div>
         </div>
@@ -128,7 +128,7 @@
             <mat-icon class="meta-icon">person</mat-icon>
             <div class="meta-content">
               <span class="meta-label">Reportado por</span>
-              <span class="meta-value">{{ incidencia.profesor?.nombre }} {{ incidencia.profesor?.apellido }}</span>
+              <span class="meta-value">{{ incidencia.profesor.nombre }} {{ incidencia.profesor.apellido }}</span>
             </div>
           </div>
           
